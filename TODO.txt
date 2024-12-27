@@ -1,0 +1,4 @@
+- Add in order splitting modifier
+- add in GTC, FoK types
+- Matching (for walking the book)
+- TCP/IP Server network
