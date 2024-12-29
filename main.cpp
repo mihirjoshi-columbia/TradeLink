@@ -1,11 +1,32 @@
-#include "req.h"
+#include <iostream>
+#include <fmt/core.h>
+#include <map>
+#include <set>
+#include <list>
+#include <cmath>
+#include <ctime>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <limits>
+#include <string>
+#include <vector>
+#include <numeric>
+#include <iostream>
+#include <algorithm>
+#include <unordered_map>
+#include <memory>
+#include <variant>
+#include <optional>
+#include <tuple>
+#include <format>
 
 enum class OrderType {
     GoodTillCancel,
     FillOrKill
 };
 
-enum class Slide {
+enum class Side {
     Buy,
     Sell
 };
@@ -53,11 +74,12 @@ class Order {
         Quantity GetInitialQuantity() const { return initialQuantity_; }
         Quantity GetRemainingQuantity () const { return remainingQuantity_; }
         Quantity GetFilledQuantity () const { return GetInitialQuantity() - GetRemainingQuantity(); }
-        bool IsFilled() cost { return GetRemainingQuantity() == 0; }
+        bool IsFilled() const { return GetRemainingQuantity() == 0; }
         void Fill(Quantity quantity) {
-            if (quanity > GetRemainingQuantity()) {
+            if (quantity > GetRemainingQuantity()) {
                 // Throw error that size of order is too big / queue it correctly
-                throw std::logic_error(std::format("Order ({}) cannot be filled for more than its remaining quanitty.", GetOrderId()));
+                throw std::logic_error(fmt::format("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
+
             }
             remainingQuantity_ -= quantity;
         }
@@ -278,10 +300,33 @@ class Orderbook {
             LevelInfos bidInfos, askInfos;
             bidInfos.reserve(orders_.size());
             askInfos.reserve(orders_.size());
-            auto CreateLevelInfos = [](Price price, const OrderPointers)
+
+            auto CreateLevelInfos = [](Price price, const OrderPointers& orders)
+            {
+                return LevelInfo{ price, std::accumulate(orders.begin(), orders.end(), (Quantity)0, [](std::size_t runingSum, const OrderPointer& order) {return runningSum + order->GetRemainingQuantity();})}
+            };
+
+            for (const auto& [price, orders] : bids_) {
+                bidInfos.push_back(CreateLevelInfos(price, orders));
+            }
+
+            for (const auto& [price, orders] : asks_) {
+                askInfos.push_back(CreateLevelInfos(price, orders));
+            }
+
+            return OrderbookLevelInfos{ bidInfos, askInfos };
+
         }
 };
+
 int main() {
+
+    Orderbook orderbook;
+    const OrderId orderId = 1;
+    orderbook.AddOrder(std::make_shared<Order>(OrderType:GoodTillCancel, orderId, Side::Buy, 100, 10));
+    std::cout << orderbook.Size() << std:endl;
+    orderbook.CancelOrder(orderId);
+    std::cout << orderbook.Size() << std:endl;
     return 0;
 }
 

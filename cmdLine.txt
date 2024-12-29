@@ -1,0 +1,2 @@
+clang++ -std=c++20 -I/opt/homebrew/include -L/opt/homebrew/lib -isysroot $(xcrun --show-sdk-path) main.cpp -o main
+
