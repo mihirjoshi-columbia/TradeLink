@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fmt/core.h>
 #include <map>
 #include <set>
 #include <list>
@@ -65,8 +64,8 @@ class Order {
             side_ { side }, 
             price_ { price }, 
             initialQuantity_ { quantity }, 
-            remainingQuantity_ { quantity }, 
-        {}
+            remainingQuantity_ { quantity } 
+        { }
         OrderId GetOrderId() const { return orderId_; }
         Side GetSide() const { return side_; }
         Price GetPrice() const { return price_; }
@@ -78,7 +77,7 @@ class Order {
         void Fill(Quantity quantity) {
             if (quantity > GetRemainingQuantity()) {
                 // Throw error that size of order is too big / queue it correctly
-                throw std::logic_error(fmt::format("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
+                throw std::logic_error(std::format("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
 
             }
             remainingQuantity_ -= quantity;
@@ -109,7 +108,7 @@ class OrderModify {
         Side GetSide() const { return side_; }
         Price GetPrice() const { return price_; }
         Quantity GetQuantity() const { return quantity_; }
-        OrderPointer ToOrderPointer(OrderTypet type) const { 
+        OrderPointer ToOrderPointer(OrderType type) const { 
             return std::make_shared<Order>(type, GetOrderId(), GetSide(), GetPrice(), GetQuantity()); 
         }
         
@@ -137,7 +136,7 @@ class Trade {
         const TradeInfo& GetAskTrade() const { return askTrade_; }
 
     private:
-        Tradeinfo bidTrade_;
+        TradeInfo bidTrade_;
         TradeInfo askTrade_;
 };
 
@@ -217,17 +216,17 @@ class Orderbook {
             }
 
             if (!bids_.empty()) {
-                auto& [_, bids] = *bids_.begin()
+                auto& [_, bids] = *bids_.begin();
                 auto& order = bids.front();
-                if (order->GetOrderType() == OrderType::FillAndKill) {
+                if (order->GetOrderType() == OrderType::FillOrKill) {
                     CancelOrder(order->GetOrderId());
                 }
             }
 
             if (!asks_.empty()) {
-                auto& [_, asks] = *asks_.begin()
+                auto& [_, asks] = *asks_.begin();
                 auto& order = asks.front();
-                if (order->GetOrderType() == OrderType::FillAndKill) {
+                if (order->GetOrderType() == OrderType::FillOrKill) {
                     CancelOrder(order->GetOrderId());
                 }
             }
@@ -240,7 +239,7 @@ class Orderbook {
             if(orders_.contains(order->GetOrderId()))
                 return {};
 
-            if (order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
+            if (order->GetOrderType() == OrderType::FillOrKill && !CanMatch(order->GetSide(), order->GetPrice()))
                 return {};
 
             OrderPointers::iterator iterator;
@@ -267,7 +266,7 @@ class Orderbook {
             const auto& [order, iterator] = orders_.at(orderId);
             orders_.erase(orderId);
 
-            if (order->GetSide() == Side::sell) { 
+            if (order->GetSide() == Side::Sell) { 
                 auto price = order->GetPrice();
                 auto& orders = asks_.at(price);
                 orders.erase(iterator);
@@ -303,7 +302,9 @@ class Orderbook {
 
             auto CreateLevelInfos = [](Price price, const OrderPointers& orders)
             {
-                return LevelInfo{ price, std::accumulate(orders.begin(), orders.end(), (Quantity)0, [](std::size_t runingSum, const OrderPointer& order) {return runningSum + order->GetRemainingQuantity();})}
+                return LevelInfo{ price, std::accumulate(orders.begin(), orders.end(), (Quantity)0,
+                    [](Quantity runningSum, const OrderPointer& order)
+                    { return runningSum + order->GetRemainingQuantity(); }) };
             };
 
             for (const auto& [price, orders] : bids_) {
@@ -323,10 +324,10 @@ int main() {
 
     Orderbook orderbook;
     const OrderId orderId = 1;
-    orderbook.AddOrder(std::make_shared<Order>(OrderType:GoodTillCancel, orderId, Side::Buy, 100, 10));
-    std::cout << orderbook.Size() << std:endl;
+    orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel, orderId, Side::Buy, 100, 10));
+    std::cout << orderbook.Size() << std::endl;
     orderbook.CancelOrder(orderId);
-    std::cout << orderbook.Size() << std:endl;
+    std::cout << orderbook.Size() << std::endl;
     return 0;
 }
 
