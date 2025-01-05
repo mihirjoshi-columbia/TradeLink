@@ -11,7 +11,7 @@ This project implements an **Order Matching Engine**, which is crucial in financ
   
 - **Matching Logic**:
   - Efficiently matches buy and sell orders based on price and quantity.
-  - Handles different order types (`GoodTillCancel`, `FillOrKill`).
+  - Handles different order types (`GoodTillCancel`, `FillAndKill`).
 
 - **Order Book Insights**:
   - Provides detailed bid/ask level information.
