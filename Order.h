@@ -19,6 +19,11 @@ class Order {
             initialQuantity_ { quantity }, 
             remainingQuantity_ { quantity } 
         { }
+
+        Order(OrderId orderId, Side side, Quantity quantity): // If only passed with id, side and quantity, means it is a market order
+            Order(OrderType::Market, odrerId, side, Constants::InvalidPrice, quantity)
+        { }
+
         OrderId GetOrderId() const { return orderId_; }
         Side GetSide() const { return side_; }
         Price GetPrice() const { return price_; }
