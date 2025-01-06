@@ -21,7 +21,7 @@ class Order {
         { }
 
         Order(OrderId orderId, Side side, Quantity quantity): // If only passed with id, side and quantity, means it is a market order
-            Order(OrderType::Market, odrerId, side, Constants::InvalidPrice, quantity)
+            Order(OrderType::Market, orderId, side, Constants::InvalidPrice, quantity)
         { }
 
         OrderId GetOrderId() const { return orderId_; }
