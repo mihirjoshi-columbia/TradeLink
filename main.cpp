@@ -7,35 +7,12 @@
 
 int main() {
     
-    /*
-    int portNum;
-
-    std::cin >> portNum;
-
-    //create socket
-    int servSocket = socket(AF_INET, SOCK_STREAM, 0);
-
-    // address
-    sockadd_in servAddr;
-    servAddr.sin_family = AF_INET;
-    servAddr.sin_port = htons(portNum);
-    servAddr.sin_addr.s_addr = INADDR_ANY;
-
-    // bind
-    bind(servSocket, (struct sockaddr*)&servAddr, sizeof(servAddr));
-
-    // listen for max 5 connection
-    listen(servSock, 5); 
-
-    // connection request
-    int clntSock = accept(servSock, nullptr, nullptr);
-    */
-
-    std::string cmdLineInput;
-    OrderId cmdLineId;
-    std::string cmdLineSide;
-    Price cmdLinePrice;
-    Quantity cmdLineQuantity;
+    // use for debugging
+    //std::string cmdLineInput;
+    //OrderId cmdLineId;
+    //std::string cmdLineSide;
+    //Price cmdLinePrice;
+    //Quantity cmdLineQuantity;
 
     std::cout << "Usage: OrderType id side price quantity";
     std::cin >> cmdLineInput >> cmdLineId >> cmdLineSide >> cmdLinePrice >> cmdLineQuantity;

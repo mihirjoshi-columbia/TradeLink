@@ -129,6 +129,11 @@ class Orderbook {
             return MatchOrders();
         }
 
+        void PrintBook() {
+            // This should invoke something from orders
+
+        }
+
         void CancelOrder(OrderId orderId) {
             if (!orders_.contains(orderId)) {
                 return;
