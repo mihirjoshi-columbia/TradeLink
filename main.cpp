@@ -8,11 +8,11 @@
 int main() {
     
     // use for debugging
-    //std::string cmdLineInput;
-    //OrderId cmdLineId;
-    //std::string cmdLineSide;
-    //Price cmdLinePrice;
-    //Quantity cmdLineQuantity;
+    std::string cmdLineInput;
+    OrderId cmdLineId;
+    std::string cmdLineSide;
+    Price cmdLinePrice;
+    Quantity cmdLineQuantity;
 
     std::cout << "Usage: OrderType id side price quantity";
     std::cin >> cmdLineInput >> cmdLineId >> cmdLineSide >> cmdLinePrice >> cmdLineQuantity;
